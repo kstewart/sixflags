@@ -1,0 +1,5 @@
+'/' : true
+'/hello': true
+'/goodbye': false
+'/enabled' : true
+'/disabled' : false
