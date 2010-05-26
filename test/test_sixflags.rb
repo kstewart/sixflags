@@ -28,10 +28,17 @@ class SixFlagsTest < Test::Unit::TestCase
     get '/enabled'
     assert last_response.ok?
     assert_equal 'Hello world!', last_response.body
+    
+    post '/enabled'
+    assert last_response.ok?
   end
   
   def test_disabled
     get '/goodbye'
+    assert last_response.forbidden?
+    assert_equal 'Feature disabled.', last_response.body
+    
+    delete '/goodbye'
     assert last_response.forbidden?
     assert_equal 'Feature disabled.', last_response.body
   end
