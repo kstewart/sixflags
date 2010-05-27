@@ -1,6 +1,7 @@
-'/' : true
-'/hello': true
-'/goodbye': false
-'/enabled' : true
-'/disabled' : false
+test:
+    '/' : true        
+    '/hello': true
+    '/goodbye': false
+    '/enabled' : true
+    '/disabled' : false
 

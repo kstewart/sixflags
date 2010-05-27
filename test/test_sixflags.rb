@@ -1,5 +1,6 @@
 require 'rubygems'
 require 'test/unit'
+require 'rack'
 require 'rack/test'
 require 'sixflags'
 
@@ -13,7 +14,7 @@ end
 
 class SixFlagsTest < Test::Unit::TestCase
   include Rack::Test::Methods
-
+  
   def app
     @test_app = TestApp.new
     
