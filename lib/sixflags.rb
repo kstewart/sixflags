@@ -1,32 +1,36 @@
 require 'rack'
 require 'redis'
+require 'json'
 
 class SixFlags
   def initialize(app, options)
     @app      = app
     @options  = options
-    host = @options[:host] ? @options[:host]:"127.0.0.1"
-    port = @options[:port] ? @options[:port]:6789
+    host      = @options[:host] ? @options[:host]:"127.0.0.1"
+    port      = @options[:port] ? @options[:port]:6789
+    @prefix   = @options[:prefix] ? @options[:prefix]:""
     
     @config = Redis.new(:host => host, :port => port)
   end
   
-  # TODO: Look at using Redis' hash features to store config
-  # TODO: Add a prefix to the keys
-  
   def call(env)
     req   = Rack::Request.new(env)
     scope = req.env["RACK_ENV"] ? req.env["RACK_ENV"]:"test"
-    url   = req.path
-    # request_method = env['REQUEST_METHOD']
-    # if ['GET', 'POST', 'DELETE', 'PUT', 'HEAD'].include?(request_method)
+    uri   = req.path
     
-    if @config[url] == "true"
-      @app.call(env)
-    elsif @config[url] == "false"
-      [403, {}, ["Feature disabled."]]
+    key = "#{@prefix}:#{scope}"
+    methods = @config.hget(key, uri)
+    
+    unless methods
+      [404, {}, ["URI not found."]]
     else
-      [404, {}, ["Feature not found."]]
+      # Check for wildcard or explicit HTTP method
+      methods = JSON.parse(methods)
+      if methods.include?('*') || methods.include?(env['REQUEST_METHOD'].upcase)
+        @app.call(env)
+      else
+        [403, {}, ["Feature disabled."]]
+      end
     end
   end
 end
