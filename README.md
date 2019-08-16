@@ -46,7 +46,7 @@ SixFlags will parse the incoming request and perform a lookup against the databa
 
 ## Author
 
-* [Kevin Stewart](mailto:kevin@working-code.com) - <http://working-code.com/>
+* [Kevin Stewart](http:/kstewart.me/)
 
 ## License
 
